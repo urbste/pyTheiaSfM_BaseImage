@@ -1,8 +1,17 @@
 FROM quay.io/pypa/manylinux2014_x86_64
  
-RUN yum install -y wget eigen3-devel atlas-static blas-devel lapack-devel
+RUN yum install -y wget atlas-static blas-devel lapack-devel
 
 RUN mkdir -p /home/libs
+
+RUN cd /home/libs && \
+    git clone https://gitlab.com/libeigen/eigen && \
+    cd eigen && git checkout 3.4.0 && \
+    mkdir build && cd build && \
+    cmake ../ -DCMAKE_BUILD_TYPE=Release && \
+    make -j install && \
+    cd /home/libs && \ 
+    rm -rf eigen
 
 RUN cd /home/libs && \
     wget https://github.com/gflags/gflags/archive/refs/tags/v2.2.2.tar.gz && \
